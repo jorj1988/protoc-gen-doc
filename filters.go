@@ -28,5 +28,11 @@ func ParaFilter(content string) string {
 // NoBrFilter removes single CR and LF from content.
 func NoBrFilter(content string) string {
 	normalized := strings.Replace(content, "\r\n", "\n", -1)
-	return strings.Replace(content, "\n", "<br>", -1)
+	paragraphs := multiNewlinePattern.Split(normalized, -1)
+	for i, p := range paragraphs {
+		withoutCR := strings.Replace(p, "\r", " ", -1)
+		withoutLF := strings.Replace(withoutCR, "\n", " ", -1)
+		paragraphs[i] = spacePattern.ReplaceAllString(withoutLF, " ")
+	}
+	return strings.Join(paragraphs, "  ")
 }
